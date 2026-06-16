@@ -5,8 +5,8 @@ function pageTreeNode($page, int $depth = 0, ?int $maxDepth = null, ?string $inf
     $children = [];
     $limit = $maxDepth ?? 10;
 
-    if ($depth < $limit && $page->hasChildren()) {
-        foreach ($page->children() as $child) {
+    if ($depth < $limit && $page->childrenAndDrafts()->count() > 0) {
+        foreach ($page->childrenAndDrafts() as $child) {
             $children[] = pageTreeNode($child, $depth + 1, $maxDepth, $infoField);
         }
     }
@@ -20,8 +20,9 @@ function pageTreeNode($page, int $depth = 0, ?int $maxDepth = null, ?string $inf
         'id'          => $page->id(),
         'title'       => $page->title()->value(),
         'status'      => $page->status(),
+        'icon'        => $page->blueprint()->icon() ?? 'page',
         'panelUrl'    => $page->panel()->url(),
-        'hasChildren' => $page->hasChildren(),
+        'hasChildren' => $page->childrenAndDrafts()->count() > 0,
         'children'    => $children,
         'info'        => $info,
     ];
@@ -38,11 +39,11 @@ return [
                     'status' => option('vscode.page-tree.status', true),
                     'search' => option('vscode.page-tree.search', false),
                     'depth'  => option('vscode.page-tree.depth', null),
-                    'info'   => option('vscode.page-tree.info', null),
+                    'info'   => option('vscode.page-tree.info', false),
                 ];
 
                 $pages = [];
-                foreach (kirby()->site()->children() as $page) {
+                foreach (kirby()->site()->childrenAndDrafts()->filter(fn($p) => $p->slug() !== 'error') as $page) {
                     $pages[] = pageTreeNode($page, 0, $config['depth'], $config['info']);
                 }
 

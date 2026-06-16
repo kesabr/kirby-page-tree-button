@@ -3,29 +3,29 @@
     <button
       class="k-tree-node__row"
       :style="{ paddingLeft: indent + 'px' }"
-      @click="handleClick"
+      @click="$emit('navigate', node)"
     >
-      <span
-        class="k-tree-node__toggle"
-        :class="{ 'k-tree-node__toggle--visible': node.hasChildren }"
-        @click.stop="toggleExpand"
-      >
+      <span class="k-tree-node__toggle" @click.stop="toggleExpand">
         <k-icon
           v-if="node.hasChildren"
           :type="expanded ? 'angle-down' : 'angle-right'"
         />
       </span>
 
-      <span
-        v-if="showStatus"
-        class="k-tree-node__dot"
-        :class="`k-tree-node__dot--${node.status}`"
-        :title="$t('page-tree.status.' + node.status) || node.status"
-      />
+      <span class="k-tree-node__icon">
+        <k-icon :type="node.icon || 'page'" />
+      </span>
 
       <span class="k-tree-node__title">{{ node.title }}</span>
 
       <span v-if="node.info" class="k-tree-node__info">{{ node.info }}</span>
+
+      <span
+        v-if="showStatus"
+        class="k-tree-node__dot"
+        :class="`k-tree-node__dot--${node.status}`"
+        :title="node.status"
+      />
     </button>
 
     <template v-if="expanded && node.hasChildren">
@@ -63,26 +63,16 @@ export default {
   emits: ['navigate'],
 
   data() {
-    return {
-      expanded: false,
-    };
+    return { expanded: false };
   },
 
   computed: {
     indent() {
-      return 12 + this.depth * 16;
+      return this.depth * 20;
     },
   },
 
   methods: {
-    handleClick() {
-      if (this.node.hasChildren) {
-        this.toggleExpand();
-      } else {
-        this.$emit('navigate', this.node);
-      }
-    },
-
     toggleExpand() {
       if (this.node.hasChildren) {
         this.expanded = !this.expanded;
@@ -96,16 +86,15 @@ export default {
 .k-tree-node__row {
   display: flex;
   align-items: center;
-  gap: 6px;
   width: 100%;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   padding-right: 12px;
   background: none;
   border: none;
   cursor: pointer;
   color: var(--color-text);
-  font-size: var(--text-sm, 0.8125rem);
+  font-size: var(--text-sm, 0.875rem);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -113,7 +102,7 @@ export default {
 }
 
 .k-tree-node__row:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .k-tree-node__row:focus-visible {
@@ -125,32 +114,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
+  width: 20px;
   flex-shrink: 0;
   color: var(--color-text-light, #999);
 }
 
-.k-tree-node__toggle:not(.k-tree-node__toggle--visible) {
-  pointer-events: none;
-}
-
-.k-tree-node__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+.k-tree-node__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
   flex-shrink: 0;
-}
-
-.k-tree-node__dot--listed {
-  background: var(--color-positive-on-light, #3d9970);
-}
-
-.k-tree-node__dot--unlisted {
-  background: var(--color-notice-on-light, #f0ad4e);
-}
-
-.k-tree-node__dot--draft {
-  background: var(--color-text-light, #aaa);
+  margin-right: 6px;
+  color: var(--color-text);
 }
 
 .k-tree-node__title {
@@ -166,5 +142,32 @@ export default {
   color: var(--color-text-light, #999);
   font-size: var(--text-xs, 0.75rem);
   padding-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.k-tree-node__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transform: translateY(-1px);
+}
+
+.k-tree-node__dot--listed {
+  background: #38a169;
+}
+
+.k-tree-node__dot--unlisted {
+  background: linear-gradient(to right, #3182ce 50%, transparent 50%);
+  border: 1.5px solid #3182ce;
+  box-sizing: border-box;
+}
+
+.k-tree-node__dot--draft {
+  background: transparent;
+  border: 1.5px solid #e53e3e;
+  box-sizing: border-box;
 }
 </style>

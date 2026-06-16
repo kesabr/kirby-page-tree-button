@@ -63,13 +63,13 @@ export default {
   top: calc(100% + 4px);
   right: 0;
   z-index: 999;
-  min-width: 260px;
+  min-width: 280px;
   max-height: 70vh;
   overflow-y: auto;
-  background: var(--color-background);
+  background: var(--color-white, #fff);
   color: var(--color-text);
   border-radius: var(--dropdown-rounded, var(--rounded));
-  box-shadow: var(--dropdown-shadow);
-  padding: 0.5rem 0;
+  box-shadow: var(--dropdown-shadow, 0 4px 12px rgba(0,0,0,.15));
+  padding: 0.375rem 0;
 }
 </style>
