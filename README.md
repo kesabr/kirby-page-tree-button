@@ -1,5 +1,7 @@
 # kirby-page-tree
 
+## NOT WORKING YET
+
 Ein Kirby 5 Panel Plugin, das auf allen Panel-Views einen Globe-Button hinzufügt. Ein Klick öffnet ein Dropdown mit dem vollständigen Page-Tree der Site zur schnellen Navigation.
 
 ## Installation
